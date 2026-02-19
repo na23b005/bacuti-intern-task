@@ -55,18 +55,16 @@ pip install -r requirements.txt
 
 ### 4. Configure Database
 
-1.  Open **pgAdmin** or `psql` and create a new database named `bacuti`.
-2.  Update the credentials in `database.py` if running locally:
+The application connects to a PostgreSQL database using a connection string.
 
-```python
-DB_PARAMS = {
-    "dbname": "bacuti",
-    "user": "postgres",
-    "password": "your_password",
-    "host": "localhost",
-    "port": "5432"
-}
+1.  Create a `.streamlit/secrets.toml` file in the project root (if running locally).
+2.  Add your `DATABASE_URL`:
+
+```toml
+DATABASE_URL = "postgresql://username:password@hostname:port/database_name"
 ```
+
+> **Note:** For Streamlit Cloud deployment, add this `DATABASE_URL` in the "Secrets" section of your app settings.
 
 ## Running the Application
 
