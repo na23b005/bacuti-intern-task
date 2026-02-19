@@ -1,10 +1,8 @@
-# Corporate Sustainability Reporting (BRSR) Dashboard
+# Corporate Sustainability Reporting Dashboard
 
 ## Overview
 
-The **Corporate Sustainability Reporting (BRSR) Dashboard** is a data analytics tool designed to track and visualize environmental, social, and governance (ESG) metrics of Indian companies listed on the NSE. 
-
-It automates the extraction of **Business Responsibility and Sustainability Reports (BRSR)** via XBRL files, parses key emission and energy data, and presents actionable insights through an interactive Streamlit dashboard.
+The **Corporate Sustainability Reporting Dashboard** is a data analytics tool designed to track and visualize environmental, social, and governance (ESG) metrics of Indian companies listed on the NSE. 
 
 ## Features
 
@@ -12,10 +10,8 @@ It automates the extraction of **Business Responsibility and Sustainability Repo
 -   **XBRL Parsing Engine**: Extracts complex data points like Scope 1, 2, & 3 emissions, turnover, and energy consumption from raw XML/XBRL files.
 -   **PostgreSQL Integration**: Robust data storage using a relational database for efficient querying.
 -   **Executive Dashboard**:
-    -   **KPI Monitor**: Tracks total companies analyzed and average renewable energy adoption.
     -   **Emission Intensity Leaderboard**: Ranks companies based on Carbon Intensity (tCO2e / Revenue).
     -   **Renewable Energy Tracker**: Visualizes the shift towards green energy sources.
--   **Cloud Ready**: Configured for easy deployment on Streamlit Community Cloud.
 
 ## Tech Stack
 
@@ -88,6 +84,11 @@ The application will open in your browser at `http://localhost:8501`.
 2.  Navigate to the **Data Synchronization & Ingestion** section.
 3.  Click **"Load Companies Data"**.
 4.  The system will download, parse, and store the latest reports automatically.
+5.  (Optional) Click **"Clear Database"** to remove all stored data.
+
+## Live Demo
+
+Deployment Link: [ESG Data Command Center](https://corporate-sustainablity-reports-kiukawqhkxgkdg2y33spdw.streamlit.app/)
 
 
 

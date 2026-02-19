@@ -11,7 +11,7 @@ def run_queries():
     cursor.execute('''
         SELECT company_name, 
                ROUND((scope1_emissions + scope2_emissions) / turnover, 6) AS emissions_intensity 
-        FROM company_emissions 
+        FROM companies 
         WHERE turnover > 0 AND (scope1_emissions + scope2_emissions) > 0
         ORDER BY emissions_intensity ASC 
         LIMIT 10
@@ -23,7 +23,7 @@ def run_queries():
     cursor.execute('''
         SELECT company_name, 
                ROUND((renewable_electricity / total_electricity) * 100, 2) AS renewable_percentage 
-        FROM company_emissions 
+        FROM companies 
         WHERE total_electricity > 0 
         ORDER BY renewable_percentage DESC 
         LIMIT 10

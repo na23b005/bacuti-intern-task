@@ -38,8 +38,8 @@ def get_kpis():
     """Fetch high-level stats for the top banner."""
     conn = get_connection()
     try:
-        count = pd.read_sql_query("SELECT COUNT(*) as c FROM company_emissions", conn).iloc[0]['c']
-        avg_ren = pd.read_sql_query("SELECT AVG(renewable_electricity / NULLIF(total_electricity,0)) as a FROM company_emissions", conn).iloc[0]['a']
+        count = pd.read_sql_query("SELECT COUNT(*) as c FROM companies", conn).iloc[0]['c']
+        avg_ren = pd.read_sql_query("SELECT AVG(renewable_electricity / NULLIF(total_electricity,0)) as a FROM companies", conn).iloc[0]['a']
         return count, (avg_ren * 100) if avg_ren else 0
     except:
         return 0, 0
@@ -151,10 +151,10 @@ with tab1:
                (scope1_emissions + scope2_emissions) as total_emissions,
                turnover / 10000000.0 as turnover,
                ((scope1_emissions + scope2_emissions) / turnover) * 10000000 AS intensity 
-        FROM company_emissions 
+        FROM companies 
         WHERE turnover > 0 AND (scope1_emissions + scope2_emissions) > 0
         ORDER BY intensity ASC 
-        LIMIT 20
+        LIMIT 10
     '''
     
     df_a = get_data(query_a)
@@ -191,10 +191,10 @@ with tab2:
                non_renewable_electricity,
                total_electricity,
                (renewable_electricity / total_electricity) * 100 AS renewable_percentage 
-        FROM company_emissions 
+        FROM companies 
         WHERE total_electricity > 0 
         ORDER BY renewable_percentage DESC 
-        LIMIT 20
+        LIMIT 10
     '''
     
     df_b = get_data(query_b)
