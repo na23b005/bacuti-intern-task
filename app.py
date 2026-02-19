@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from scraper import NSEScraper
 from parser import parse_xbrl_file
-from database import setup_database, insert_company_data, get_connection
+from database import setup_database, insert_company_data, get_connection, clear_database
 import os
 import time
 
@@ -67,50 +67,63 @@ st.markdown("### Executive Dashboard")
 st.subheader("Data Synchronization & Ingestion")
 st.markdown("Use this module to scrape the latest XBRL files from NSE and analyse data.")
 
-if st.button("Load Companies Data", type="primary"):
-    scraper = NSEScraper()
-    
-    # Initialize status with a generic title
-    with st.status("Initializing Ingestion Pipeline...", expanded=True) as status:
-        setup_database()
-        scraper.initialize()
+col1, col2 = st.columns([1, 1])
+
+with col1:
+    if st.button("Load Companies Data", type="primary"):
+        scraper = NSEScraper()
         
-        companies = scraper.get_company_list()
-        
-        if not companies:
-            status.update(label="Failed to fetch company list", state="error")
-            st.error("Could not retrieve ticker data from NSE.")
-        else:
-            total = len(companies)
-            processed_count = 0
-            progress_bar = st.progress(0)
+        # Initialize status with a generic title
+        with st.status("Initializing Ingestion Pipeline...", expanded=True) as status:
+            setup_database()
+            scraper.initialize()
             
-            for i, comp in enumerate(companies):
-                symbol = comp.get('symbol', 'Unknown')
-                xbrl_url = comp.get('xbrlFile')
-                
-                # UPDATE STATUS LABEL DIRECTLY: Prevents the scrolling wall of text
-                status.update(label=f"Processing {i+1}/{total}: {symbol}...")
-                
-                filepath = scraper.download_xbrl(symbol, xbrl_url)
-                
-                if filepath:
-                    try:
-                        parsed_data = parse_xbrl_file(filepath, symbol)
-                        insert_company_data(parsed_data)
-                        processed_count += 1
-                    except Exception as e:
-                        st.warning(f"Parse error for {symbol}: {e}")
-                    finally:
-                        if os.path.exists(filepath):
-                            os.remove(filepath)
-                
-                progress_bar.progress((i + 1) / total)
+            companies = scraper.get_company_list()
             
-            status.update(label="Ingestion Complete", state="complete", expanded=False)
-            st.success(f"Pipeline finished. Successfully processed {processed_count} reports.")
+            if not companies:
+                status.update(label="Failed to fetch company list", state="error")
+                st.error("Could not retrieve ticker data from NSE.")
+            else:
+                total = len(companies)
+                processed_count = 0
+                progress_bar = st.progress(0)
+                
+                for i, comp in enumerate(companies):
+                    symbol = comp.get('symbol', 'Unknown')
+                    xbrl_url = comp.get('xbrlFile')
+                    
+                    # UPDATE STATUS LABEL DIRECTLY: Prevents the scrolling wall of text
+                    status.update(label=f"Processing {i+1}/{total}: {symbol}...")
+                    
+                    filepath = scraper.download_xbrl(symbol, xbrl_url)
+                    
+                    if filepath:
+                        try:
+                            parsed_data = parse_xbrl_file(filepath, symbol)
+                            insert_company_data(parsed_data)
+                            processed_count += 1
+                        except Exception as e:
+                            st.warning(f"Parse error for {symbol}: {e}")
+                        finally:
+                            if os.path.exists(filepath):
+                                os.remove(filepath)
+                    
+                    progress_bar.progress((i + 1) / total)
+                
+                status.update(label="Ingestion Complete", state="complete", expanded=False)
+                st.success(f"Pipeline finished. Successfully processed {processed_count} reports.")
+                time.sleep(1)
+                st.rerun()
+
+with col2:
+    if st.button("Clear Database", type="secondary"):
+        try:
+            clear_database()
+            st.success("Database has been cleared successfully.")
             time.sleep(1)
             st.rerun()
+        except Exception as e:
+            st.error(f"Error clearing database: {e}")
 
 # --- Section 2: KPI Overview ---
 kpi_count, kpi_avg_ren = get_kpis()

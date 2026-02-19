@@ -1,17 +1,27 @@
 import psycopg2
+import os
+import streamlit as st
 
-# 1. Update these with your local PostgreSQL credentials!
+def get_connection():
+
+    # Priority 1 — Streamlit secrets
+    if "DATABASE_URL" in st.secrets:
+        return psycopg2.connect(st.secrets["DATABASE_URL"])
+
+    # Priority 2 — env variable (local dev)
+    if os.getenv("DATABASE_URL"):
+        return psycopg2.connect(os.getenv("DATABASE_URL"))
+
+    raise Exception("Database connection not configured")
+
+# Default fallback params (kept for backward compatibility if needed)
 DB_PARAMS = {
-    "dbname": "bacuti", # Create this database in pgAdmin or psql first
-    "user": "postgres",         # Your Postgres username
-    "password": "asd",# Your Postgres password
+    "dbname": "bacuti",
+    "user": "postgres",
+    "password": "asd", 
     "host": "localhost",
     "port": "5432"
 }
-
-def get_connection():
-    """Establishes a connection to the PostgreSQL database."""
-    return psycopg2.connect(**DB_PARAMS)
 
 def setup_database():
     """
@@ -85,3 +95,17 @@ def insert_company_data(data):
     conn.commit()
     cursor.close()
     conn.close()
+
+def clear_database():
+    """Truncates the company_emissions table."""
+    conn = get_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("TRUNCATE TABLE company_emissions")
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        raise e
+    finally:
+        cursor.close()
+        conn.close()
