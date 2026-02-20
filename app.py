@@ -158,14 +158,14 @@ with tab1:
             column_config={
                 "symbol": st.column_config.TextColumn("Symbol", width="small"),
                 "company_name": st.column_config.TextColumn("Company", width="medium"),
-                "scope1": st.column_config.NumberColumn("Scope 1 (KtCO2e)", format="%.4f"),
-                "scope2": st.column_config.NumberColumn("Scope 2 (KtCO2e)", format="%.4f"),
-                "total_emissions": st.column_config.NumberColumn("Total Emissions (KtCO2e)", format="%.4f"),
+                "scope1": st.column_config.NumberColumn("Scope 1 (KtCO2e)", format="%.2f"),
+                "scope2": st.column_config.NumberColumn("Scope 2 (KtCO2e)", format="%.2f"),
+                "total_emissions": st.column_config.NumberColumn("Total Emissions (KtCO2e)", format="%.2f"),
                 "turnover": st.column_config.NumberColumn("Turnover (Cr INR)", format="%.2f"), 
                 "intensity": st.column_config.NumberColumn(
                     "Intensity (KtCO2e / Cr INR)", 
                     help="Calculated as (Scope 1 + Scope 2) / Turnover * 10,000,000 (KtCO2e per Crore INR)",
-                    format="%.6f"
+                    format="%.2f"
                 ),
             }
         )
