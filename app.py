@@ -60,6 +60,8 @@ if st.button("Start Processing", type="primary"):
     status_container = st.status("Starting Sync Process...", expanded=True)
     
     try:
+        setup_database() # Ensure DB exists before clearing
+        
         # Clear Database First
         status_container.write("Clearing database...")
         clear_database()
@@ -76,8 +78,6 @@ if st.button("Start Processing", type="primary"):
             
         total_companies = len(companies)
         status_container.write(f"Found {total_companies} companies. Starting pipeline...")
-        
-        setup_database() # Ensure DB is ready
         
         progress_bar = st.progress(0)
         success_count = 0
@@ -128,14 +128,7 @@ if st.button("Start Processing", type="primary"):
         clear_database()
         st.error("Cleanup complete: Database cleared and local files removed.")
 
-if st.button("Clear Database", type="secondary"):
-    try:
-        clear_database()
-        st.success("Database cleared.")
-        time.sleep(1)
-        st.rerun()
-    except Exception as e:
-        st.error(f"Error: {e}")
+
 
 # --- Section 2: KPI Overview ---
 kpi_count, kpi_avg_ren = queries.get_kpi_metrics()
